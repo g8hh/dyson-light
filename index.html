@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <!-- to force a reload -->
+    <meta http-equiv="cache-control" content="max-age=0" />
+    <meta http-equiv="cache-control" content="no-cache" />
+    <meta http-equiv="expires" content="0" />
+    <meta http-equiv="expires" content="Tue, 01 Jan 1980 1:00:00 GMT" />
+    <meta http-equiv="pragma" content="no-cache" />
+
+    <title>戴森光 - Dyson Light</title>
+    <link rel="stylesheet" href="views/stylesheet.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+</head>
+<body id="theBody" oncontextmenu="return false;" style="padding:5px;text-align:center;height:600px;width:1200px;margin:auto;position:relative" class="medium">
+<script src="chs.js?07071443"></script>
+<script src="https://cdn.jsdelivr.net/gh/g8hh/g8hh.github.io/zh/core.js"></script>
+<div id="planetView" style="display:block">
+    <div id="leftSideDivs" style="width:300px;">
+        <div id="resources" style="vertical-align: top;width:280px;height:160px;border:1px solid;padding:10px;font-size:14px;text-align:left;position:relative">
+            <div class="button" onclick="showMore()" style="position:absolute;left:5px;top:7px">Help</div>
+            <div class="title">Planet Info</div>
+            <div class="resourceDiv" id="electricityDiv">Electricity: <div id="electricityUsed" class="bold"></div> / <div id="electricityGain"></div></div>
+            <div class="resourceDiv" id="oreDiv">Ore: <div id="ore" class="bold">5</div> (<div id="oreDelta">+1</div>/s)</div>
+            <div class="resourceDiv" id="elecDiv">Electronics: <div id="electronics" class="bold">5</div> (<div id="electronicsDelta">+1</div>/s)</div>
+            <div class="resourceDiv" id="solarPanelsDiv">Solar Panels: <div id="panels" class="bold">5</div> (<div id="panelsDelta">+1</div>/s)</div>
+            <div class="resourceDiv" id="sailsDiv" style="display:none;">Solar Sails: <div id="sails" class="bold">5</div> (<div id="sailsDelta">+1</div>/s)</div>
+            <div class="resourceDiv" id="popDiv" style="display:none;">Population: <div id="pop" class="bold">5</div> / <div id="popTotal" class="bold">5</div> (<div id="popDelta">+1</div>/s)</div>
+            <div class="resourceDiv" id="vPopDiv" style="display:none;">V. Pop.: <div id="vPop" class="bold">5</div> / <div id="vPopTotal" class="bold">5</div> (<div id="vPopDelta">+1</div>/s)</div>
+            <div class="resourceDiv" id="distanceDiv" style="display:none;">Distance from sun: <div id="distance" class="bold">1</div> AU</div>
+            <div class="resourceDiv" id="launchingDiv" style="display:none;">Launching: <div id="launching" class="bold">1</div> (<div id="launchingDelta">+1</div>/s)</div>
+        </div>
+        <div id="working" style="vertical-align: top;width:280px;height:160px;border:1px solid;padding:10px;font-size:14px;text-align:left;opacity:0">
+            <div class="title">Workers</div>
+            <div class="resourceDiv" id="workersDiv">Workers: <div id="workers" class="bold">5</div> / <div id="workersTotal">5</div></div>
+            <input id="workerNum" style="width:50px;" value="1"><div class="button" onclick="setAmount(0)">1</div><div class="button" onclick="setAmount(1)">50%</div><div class="button" onclick="setAmount(2)">100%</div><br>
+            <div class="button" onclick="changeWorker('mineWorker', true)">+</div><div class="button" onclick="changeWorker('mineWorker', false)">-</div><div class="button" onclick="autoWorker('mine')" id="mineAuto">auto</div> <div class="bold" id="mineWorker">5</div> Working at Mine<br>
+            <div class="button" onclick="changeWorker('factoryWorker', true)">+</div><div class="button" onclick="changeWorker('factoryWorker', false)">-</div><div class="button" onclick="autoWorker('factory')" id="factoryAuto">auto</div> <div class="bold" id="factoryWorker">5</div> Working at Factory<br>
+            <div class="button" onclick="changeWorker('labWorker', true)">+</div><div class="button" onclick="changeWorker('labWorker', false)">-</div><div class="button" onclick="autoWorker('lab')" id="labAuto">auto</div> <div class="bold" id="labWorker">5</div> Working at Lab<br>
+            <div id="workingquantumTransport"><div class="button" onclick="changeWorker('quantumTransportWorker', true)">+</div><div class="button" onclick="changeWorker('quantumTransportWorker', false)">-</div><div class="button" onclick="autoWorker('quantumTransport')" id="quantumTransportAuto">auto</div> <div class="bold" id="quantumTransportWorker">5</div> Working at Q. Transport</div><br>
+            <div id="workinglaunchPad"><div class="button" onclick="changeWorker('launchPadWorker', true)">+</div><div class="button" onclick="changeWorker('launchPadWorker', false)">-</div><div class="button" onclick="autoWorker('launchPad')" id="launchPadAuto">auto</div> <div class="bold" id="launchPadWorker">5</div> Working at Launch Pad</div><br>
+        </div>
+        <div id="research" style="vertical-align: top;width:280px;height:254px;border:1px solid;padding:10px;font-size:15px;text-align:left;overflow-y:auto;">
+            <div class="title">Research</div>
+            <div class="resourceDiv" id="scienceDiv">Science: <div id="science" class="bold">5</div> (<div id="scienceDelta">+1</div>)</div>
+            <div id="researchDivs" style="width:100%;"></div>
+        </div>
+    </div>
+
+    <div id="gridZone" style="width:500px;text-align:center;vertical-align:top;font-size:0;position:relative">
+        <div id="buildingZone" style="vertical-align: top;position:relative;font-size:14px;font-weight:bold;"></div>
+        <div id="planetZone" style="position:relative;top:400px;height:120px;width:100%;background-color:black;"></div>
+        <div id="sunZone" onclick="changeZone('sunView')" style="position:absolute;top:520px;left:0;height:120px;width:100%;background-color:black;cursor:pointer;overflow:hidden;">
+            <div id="sunZoneDrawing" style="width:800px;height:800px;background-color:yellow;border-radius:50%;"></div>
+            <div id="sunZoneInfo" style="position:absolute;right:10px;bottom:5px;font-size:14px;text-align:right">
+                Click here for the sun view<br>
+                Dyson Sphere progress: <div id="sunZonePercent" class="bold">10</div>%<br>
+                Electricity: <div id="sunZonePowerReq" class="bold">50</div> / <div id="sunZonePowerGain">250</div>
+            </div>
+        </div>
+        <div id="sailsFromPlanetDiv" style="position:absolute;top:0;left:0"></div>
+    </div>
+
+    <div id="selectionOptions" style="vertical-align: top;width:300px;">
+
+        <div id="buildingInfoDiv" style="border:1px solid;width:100%;display:none;padding:10px;text-align:left;">
+            <div class="title" id="buildingInfoTitle">Building Info</div>
+            <div id="buildingInfo"></div>
+            <div id="buildingExtra"></div><br>
+            <div class="button" onclick="sellBuilding()">(S)ell</div>
+            <div class="button" id="buildingPause" onclick="pauseBuilding()">Pause (Space)</div><br><br>
+            <div id="buildingUpgrade">
+                <div id="buildingUpgradeInfo"></div><br>
+                <div class="button" onclick="upgradeBuilding()">(U)pgrade</div>
+            </div>
+        </div>
+        <div id="selectionOptionsDiv" style="border:1px solid;width:100%;display:none;">
+            <div class="title">Build Options</div>
+            <div id="buildOptions"></div>
+        </div>
+    </div>
+
+    <div id="errorMessages" style="position:absolute;left:380px;"></div>
+</div>
+
+<div id="sunView" style="height:640px;width:1100px;background-color:black;display:none;text-align:left;position:relative;">
+    <div id="goBack" onclick="changeZone('planetView')" class="button" style="font-size:14px;position:absolute;left:0;top:0;">Planet View</div>
+    <div id="sunDrawing" style="width:600px;height:600px;background-color:yellow;border-radius:50%;top:21px;left:251px;position:absolute;"></div>
+    <canvas id="dysonDraw" style="position:absolute;top:20px;left:250px;" width="600" height="600"></canvas>
+    <div id="sailsInOrbitDiv" style="position:absolute;top:0;left:0"></div>
+    <div id="sailsFromSunDiv" style="position:absolute;top:0;left:0"></div>
+</div>
+
+<div id="winScreen" onclick="closeWin()" style="position: absolute;width: 200px;padding: 20px;border-radius: 15px;cursor: pointer;top: 260px;left:440px;font-size: 20px;background-color: green;display:none;">
+    You win! Congratulations and thanks for playing!<br>That's all... for now
+</div>
+
+<div id="moreScreen" onclick="closeMore()" style="position: absolute;width:700px;padding: 20px;border-radius: 15px;cursor: pointer;top: 100px;left:100px;font-size: 14px;background-color: #bbc0d8;display:none;border:2px solid;text-align:left">
+    This game is made for the incremental jam by Stop_Sign!<br>
+    The goal is to build a Dyson Sphere around the sun, piece by piece. There's 31415 solar sails to place around the sun, good luck!<br><br>
+    To start, click on ore and build mines - they're free to build, so cover each of the mines right away!<br>
+    Then, build a solar panel - you start with 1 - and a factory with the ore from the mines, and use the factory to get another solar panel, for another factory, etc.<br>
+    Don't be afraid to sell, there's a 100% return policy always, but be careful of selling electricity buildings and crashing the power grid.<br>
+    Get some science with a lab, and keep unlocking new pieces until you can harness the power of the sun!<br>
+    Click this window to close it.<br><br>
+
+    Some hotkeys:<br>
+    Use the arrow keys to move around the grid<br>
+    Press the key surrounded by () to build that building or do that action<br>
+    Escape closes error messages<br>
+    Shift + [num] moves to other planets, when you unlock them<br><br>
+
+    The game saves every 20 seconds.<br>
+    Total seconds played: <div id="totalTime"></div>
+</div>
+
+</body>
+</html>
+<!--<div>Icons made by <a href="https://www.flaticon.com/authors/smashicons" title="Smashicons">Smashicons</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>-->
+<!--<a href="http://www.onlinewebfonts.com">oNline Web Fonts</a>-->
+
+<script src="driver.js?1"></script>
+<script src="saving.js?1"></script>
+<script src="helpers/helpers.js?1"></script>
+<script src="helpers/hotkeys.js?1"></script>
+<script src="helpers/interval.js?1"></script>
+<script src="views/view.js?1"></script>
+<script src="DysonLight.js?1"></script>
+<script src="SailMovement.js?1"></script>
+<script src="Initial.js?1"></script>
+<script src="All.js?1"></script>
+<script>
+    // (function (i, s, o, g, r, a, m) {
+    //     i['GoogleAnalyticsObject'] = r; i[r] = i[r] || function () {
+    //         (i[r].q = i[r].q || []).push(arguments)
+    //     }, i[r].l = 1 * new Date(); a = s.createElement(o),
+    //         m = s.getElementsByTagName(o)[0]; a.async = 1; a.src = g; m.parentNode.insertBefore(a, m)
+    // })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
+    //
+    // ga('create', 'UA-60978932-1', 'auto');
+    // ga('send', 'pageview');
+
+</script>
+<script>
+    startGame();
+</script>
+<!--客服 开始-->
+<script src="https://cdn.jsdelivr.net/gh/g8hh/g8hh.github.io/static/js/jquery.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/g8hh/g8hh.github.io/static/css/kf.css" type="text/css" media="screen" charset="utf-8">
+<script src="https://cdn.jsdelivr.net/gh/g8hh/g8hh.github.io/static/js/kf.js"></script>
+<!-- 客服 结束 -->
+<!--站长统计-->
+    <div style="display: none">
+        <script type="text/javascript" src="//s19.cnzz.com/z_stat.php?id=1267958737&web_id=1267958737"></script>
+    </div>
