@@ -181,7 +181,7 @@ var cnItems = {
     "The ultimate in teleporting technology": "终极传送技术",
     "The ultimate in light transferring technology": "终极光传输技术",
     "To love beauty is to see light.": "爱美就是见光。",
-    "": "",
+    "The ultimate in Dyson Sphere technology": "终极戴森球技术",
     "": "",
     "": "",
     "": "",
